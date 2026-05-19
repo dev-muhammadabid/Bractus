@@ -11,13 +11,15 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * UserController exposes the REST API for user management.
+ * All endpoints are prefixed with /api to avoid conflicts with the Thymeleaf UI routes.
  *
  * Endpoints:
- *   POST /signup        - Register a new user
- *   POST /login         - Authenticate an existing user
- *   GET  /users/{id}    - Get user info by ID
+ *   POST /api/signup        - Register a new user
+ *   POST /api/login         - Authenticate an existing user
+ *   GET  /api/users/{id}    - Get user info by ID
  */
 @RestController
+@RequestMapping("/api")
 public class UserController {
 
     private final UserService userService;
@@ -27,7 +29,7 @@ public class UserController {
     }
 
     /**
-     * Register a new user.
+     * Register a new user via REST API.
      * On success, also triggers welcome note creation in Notes Service.
      *
      * @param request body with username and password
@@ -40,7 +42,7 @@ public class UserController {
     }
 
     /**
-     * Log in an existing user.
+     * Log in an existing user via REST API.
      *
      * @param request body with username and password
      * @return 200 OK with user id and username
