@@ -4,89 +4,311 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login – NoteApp</title>
-    <!-- Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * { font-family: 'Inter', sans-serif; }
+
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            background: #0f0c29;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            overflow: hidden;
+        }
+
+        /* ── Animated background blobs ── */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.35;
+            animation: float 8s ease-in-out infinite;
+        }
+        .blob-1 { width: 500px; height: 500px; background: #667eea; top: -150px; left: -100px; animation-delay: 0s; }
+        .blob-2 { width: 400px; height: 400px; background: #764ba2; bottom: -100px; right: -80px; animation-delay: 3s; }
+        .blob-3 { width: 300px; height: 300px; background: #f093fb; top: 40%; left: 40%; animation-delay: 5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-30px) scale(1.05); }
+        }
+
+        /* ── Split layout ── */
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+        .right-panel {
+            width: 480px;
+            min-height: 100vh;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255,255,255,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .auth-card {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
             padding: 2.5rem;
-            width: 100%;
-            max-width: 420px;
+            position: relative;
+            z-index: 1;
         }
-        .brand-icon {
-            font-size: 2.5rem;
+
+        /* ── Left panel branding ── */
+        .brand-logo {
+            font-size: 4rem;
+            background: linear-gradient(135deg, #667eea, #f093fb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 1.5rem;
+        }
+        .brand-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+        .brand-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.6);
+            max-width: 380px;
+            line-height: 1.7;
+        }
+        .feature-list {
+            margin-top: 2.5rem;
+            list-style: none;
+            padding: 0;
+        }
+        .feature-list li {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .feature-list li i {
             color: #667eea;
+            font-size: 1rem;
         }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+
+        /* ── Auth form card ── */
+        .auth-card {
+            width: 100%;
+            max-width: 380px;
+        }
+        .auth-card h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+        .auth-card .subtitle {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        /* ── Form inputs ── */
+        .form-label {
+            color: rgba(255,255,255,0.8);
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.4rem;
+        }
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255,255,255,0.4);
+            font-size: 1rem;
+            z-index: 2;
+        }
+        .form-control {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 10px;
+            color: #fff;
+            padding: 0.75rem 1rem 0.75rem 2.8rem;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+        .form-control::placeholder { color: rgba(255,255,255,0.3); }
+        .form-control:focus {
+            background: rgba(255,255,255,0.12);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.25);
+            color: #fff;
+            outline: none;
+        }
+
+        /* ── Submit button ── */
+        .btn-auth {
+            width: 100%;
+            padding: 0.8rem;
             border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
         }
-        .btn-primary:hover {
-            background: linear-gradient(135deg, #5a6fd6, #6a3f96);
+        .btn-auth::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0);
+            transition: background 0.2s;
+        }
+        .btn-auth:hover::after { background: rgba(255,255,255,0.1); }
+        .btn-auth:active { transform: scale(0.98); }
+
+        /* ── Divider ── */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+        }
+        .divider span { color: rgba(255,255,255,0.3); font-size: 0.8rem; }
+
+        /* ── Footer link ── */
+        .auth-footer {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.88rem;
+        }
+        .auth-footer a {
+            color: #a78bfa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-footer a:hover { color: #c4b5fd; }
+
+        /* ── Error alert ── */
+        .alert-glass {
+            background: rgba(239,68,68,0.15);
+            border: 1px solid rgba(239,68,68,0.3);
+            border-radius: 10px;
+            color: #fca5a5;
+            padding: 0.7rem 1rem;
+            font-size: 0.88rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* ── Validation error ── */
+        .field-error {
+            color: #fca5a5;
+            font-size: 0.78rem;
+            margin-top: 0.3rem;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .left-panel { display: none; }
+            .right-panel {
+                width: 100%;
+                border-left: none;
+                background: transparent;
+                backdrop-filter: none;
+            }
         }
     </style>
 </head>
 <body>
-<div class="auth-card">
-    <!-- Brand -->
-    <div class="text-center mb-4">
-        <i class="bi bi-journal-text brand-icon"></i>
-        <h2 class="fw-bold mt-2 mb-0">NoteApp</h2>
-        <p class="text-muted small">Sign in to your account</p>
-    </div>
 
-    <!-- Error alert -->
-    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show py-2" role="alert">
-        <i class="bi bi-exclamation-circle me-1"></i>
-        <span th:text="${error}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
+<!-- Background blobs -->
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
 
-    <!-- Login form -->
-    <form th:action="@{/login}" th:object="${loginRequest}" method="post">
-        <div class="mb-3">
-            <label for="username" class="form-label fw-semibold">Username</label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-person"></i></span>
-                <input type="text" id="username" th:field="*{username}"
-                       class="form-control" placeholder="Enter your username" autofocus>
-            </div>
-            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('username')}"
-                 th:errors="*{username}"></div>
+<!-- Left branding panel -->
+<div class="left-panel">
+    <div>
+        <div class="brand-logo"><i class="bi bi-journal-text"></i></div>
+        <div class="brand-title">NoteApp</div>
+        <p class="brand-subtitle">Your personal space to capture ideas, tasks, and thoughts — all in one place.</p>
+        <ul class="feature-list">
+            <li><i class="bi bi-check-circle-fill"></i> Create and organise notes instantly</li>
+            <li><i class="bi bi-check-circle-fill"></i> Access from anywhere, anytime</li>
+            <li><i class="bi bi-check-circle-fill"></i> Simple, fast, distraction-free</li>
+            <li><i class="bi bi-check-circle-fill"></i> Welcome note created automatically</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Right form panel -->
+<div class="right-panel">
+    <div class="auth-card">
+        <h2>Welcome back</h2>
+        <p class="subtitle">Sign in to continue to NoteApp</p>
+
+        <!-- Error alert -->
+        <div th:if="${error}" class="alert-glass">
+            <i class="bi bi-exclamation-circle-fill"></i>
+            <span th:text="${error}"></span>
         </div>
 
-        <div class="mb-4">
-            <label for="password" class="form-label fw-semibold">Password</label>
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                <input type="password" id="password" th:field="*{password}"
-                       class="form-control" placeholder="Enter your password">
+        <!-- Login form -->
+        <form th:action="@{/login}" th:object="${loginRequest}" method="post">
+
+            <div class="input-wrapper">
+                <label class="form-label">Username</label>
+                <i class="bi bi-person input-icon"></i>
+                <input type="text" th:field="*{username}" class="form-control"
+                       placeholder="Enter your username" autofocus autocomplete="username">
+                <div class="field-error" th:if="${#fields.hasErrors('username')}"
+                     th:errors="*{username}"></div>
             </div>
-            <div class="text-danger small mt-1" th:if="${#fields.hasErrors('password')}"
-                 th:errors="*{password}"></div>
-        </div>
 
-        <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
-            <i class="bi bi-box-arrow-in-right me-1"></i> Sign In
-        </button>
-    </form>
+            <div class="input-wrapper">
+                <label class="form-label">Password</label>
+                <i class="bi bi-lock input-icon"></i>
+                <input type="password" th:field="*{password}" class="form-control"
+                       placeholder="Enter your password" autocomplete="current-password">
+                <div class="field-error" th:if="${#fields.hasErrors('password')}"
+                     th:errors="*{password}"></div>
+            </div>
 
-    <hr class="my-4">
-    <p class="text-center text-muted mb-0">
-        Don't have an account?
-        <a th:href="@{/signup}" class="text-decoration-none fw-semibold">Sign up</a>
-    </p>
+            <button type="submit" class="btn-auth">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+            </button>
+        </form>
+
+        <div class="divider"><span>or</span></div>
+
+        <p class="auth-footer">
+            Don't have an account? <a th:href="@{/signup}">Create one free</a>
+        </p>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
