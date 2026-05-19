@@ -6,7 +6,9 @@ target/
 .idea/
 *.iml
 .vscode/
+.kiro/
 *.code-workspace
+
 
 # OS files
 .DS_Store
