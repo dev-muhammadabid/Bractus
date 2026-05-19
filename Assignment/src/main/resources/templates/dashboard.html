@@ -164,9 +164,8 @@
                 <div class="note-content" th:text="${note.content}"></div>
                 <div class="note-meta">
                     <i class="bi bi-clock me-1"></i>
-                    <!-- Display updatedAt timestamp if available -->
-                    <span th:if="${note.updatedAt != null}" th:text="${note.updatedAt}"></span>
-                    <span th:if="${note.updatedAt == null}" th:text="${note.createdAt}"></span>
+                    <!-- Show updatedAt if present, otherwise createdAt (both are ISO strings from JSON) -->
+                    <span th:text="${note.updatedAt != null ? note.updatedAt : note.createdAt}"></span>
                 </div>
             </div>
             <!-- Action buttons -->
